@@ -13,12 +13,12 @@ public class PlaceholderHook implements Updatable<Kit> {
     private final Placeholders extension;
     private final Duels api;
 
-    private me.clip.placeholderapi.PlaceholderHook parent;
+    private me.clip.placeholderapi.PlaceholderHook previous;
 
     public PlaceholderHook(final Placeholders extension, final Duels api) {
         this.extension = extension;
         this.api = api;
-        this.parent = PlaceholderAPI.getPlaceholders().get("duels");
+        this.previous = PlaceholderAPI.getPlaceholders().get("duels");
         PlaceholderAPI.unregisterPlaceholderHook(api);
         new PlaceholdersExpansion().register();
     }
@@ -56,7 +56,7 @@ public class PlaceholderHook implements Updatable<Kit> {
                 return result;
             }
 
-            return parent != null ? parent.onPlaceholderRequest(player, s) : null;
+            return previous != null ? previous.onPlaceholderRequest(player, s) : null;
         }
     }
 }

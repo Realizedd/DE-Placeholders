@@ -74,6 +74,13 @@ public class Placeholders extends DuelsExtension implements Listener {
         action.run();
     }
 
+    @SuppressWarnings("unchecked")
+    private void register(final Class<? extends Updatable<Kit>> clazz) {
+        try {
+            updatables.add(clazz.getConstructor(Placeholders.class, Duels.class).newInstance(this, api));
+        } catch (Exception ignored) {}
+    }
+
     public String find(final Player player, String identifier) {
         if (player == null) {
             return "Player is required";
@@ -154,13 +161,6 @@ public class Placeholders extends DuelsExtension implements Listener {
         }
 
         return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void register(final Class<? extends Updatable<Kit>> clazz) {
-        try {
-            updatables.add(clazz.getConstructor(Placeholders.class, Duels.class).newInstance(this, api));
-        } catch (Exception ignored) {}
     }
 
     @EventHandler
