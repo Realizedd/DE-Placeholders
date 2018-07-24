@@ -1,42 +1,60 @@
 package me.realized.de.placeholders;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.realized.duels.api.Duels;
+import me.realized.duels.api.kit.Kit;
 import org.bukkit.entity.Player;
 
-public class ClipPlaceholders extends PlaceholderExpansion {
+public class PlaceholderHook implements Updatable<Kit> {
 
     private final Placeholders extension;
     private final Duels api;
 
-    public ClipPlaceholders(final Placeholders extension, final Duels api) {
+    private me.clip.placeholderapi.PlaceholderHook parent;
+
+    public PlaceholderHook(final Placeholders extension, final Duels api) {
         this.extension = extension;
         this.api = api;
-        register();
+        this.parent = PlaceholderAPI.getPlaceholders().get("duels");
+        PlaceholderAPI.unregisterPlaceholderHook(api);
+        new PlaceholdersExpansion().register();
     }
 
     @Override
-    public String getIdentifier() {
-        return "duels";
-    }
+    public void update(final Kit value) {}
 
-    @Override
-    public String getPlugin() {
-        return api.getName();
-    }
+    public class PlaceholdersExpansion extends PlaceholderExpansion {
 
-    @Override
-    public String getAuthor() {
-        return "Realized";
-    }
+        @Override
+        public String getIdentifier() {
+            return "duels";
+        }
 
-    @Override
-    public String getVersion() {
-        return "1.0.0";
-    }
+        @Override
+        public String getPlugin() {
+            return api.getName();
+        }
 
-    @Override
-    public String onPlaceholderRequest(final Player player, final String s) {
-        return extension.find(player, s);
+        @Override
+        public String getAuthor() {
+            return "Realized";
+        }
+
+        @Override
+        public String getVersion() {
+            return "1.0.0";
+        }
+
+        @Override
+        public String onPlaceholderRequest(final Player player, final String s) {
+            final String result = extension.find(player, s);
+
+            if (result != null) {
+                return result;
+            }
+
+            return parent != null ? parent.onPlaceholderRequest(player, s) : null;
+        }
     }
 }
