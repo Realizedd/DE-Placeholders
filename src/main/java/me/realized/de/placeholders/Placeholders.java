@@ -3,7 +3,6 @@ package me.realized.de.placeholders;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import me.realized.de.placeholders.config.Config;
 import me.realized.de.placeholders.hooks.MVdWPlaceholderHook;
 import me.realized.de.placeholders.hooks.PlaceholderHook;
 import me.realized.de.placeholders.util.StringUtil;
@@ -19,6 +18,7 @@ import me.realized.duels.api.match.Match;
 import me.realized.duels.api.user.User;
 import me.realized.duels.api.user.UserManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +26,12 @@ import org.bukkit.plugin.Plugin;
 
 public class Placeholders extends DuelsExtension implements Listener {
 
-    private Config config;
+    private String userNotFound;
+    private String notInMatch;
+    private String durationFormat;
+    private String noKit;
+    private String noOpponent;
+
     @Getter
     private UserManager userManager;
     @Getter
@@ -38,10 +43,17 @@ public class Placeholders extends DuelsExtension implements Listener {
 
     @Override
     public void onEnable() {
-        this.config = new Config(this);
+        final FileConfiguration config = getConfig();
+        this.userNotFound = config.getString("user-not-found");
+        this.notInMatch = config.getString("not-in-match");
+        this.durationFormat = config.getString("duration-format");
+        this.noKit = config.getString("no-kit");
+        this.noOpponent = config.getString("no-opponent");
+
         this.userManager = api.getUserManager();
         this.kitManager = api.getKitManager();
         this.arenaManager = api.getArenaManager();
+
         api.getServer().getPluginManager().registerEvents(this, api);
         doIfFound("PlaceholderAPI", () -> register(PlaceholderHook.class));
         doIfFound("MVdWPlaceholderAPI", () -> register(MVdWPlaceholderHook.class));
@@ -73,11 +85,11 @@ public class Placeholders extends DuelsExtension implements Listener {
             user = userManager.get(player);
 
             if (user == null) {
-                return StringUtil.color(config.getUserNotFound());
+                return StringUtil.color(userNotFound);
             }
 
             final Kit kit = kitManager.get(identifier.replace("rating_", ""));
-            return kit != null ? String.valueOf(user.getRating(kit)) : StringUtil.color(config.getNoKit());
+            return kit != null ? String.valueOf(user.getRating(kit)) : StringUtil.color(noKit);
         }
 
         if (identifier.startsWith("match_")) {
@@ -85,21 +97,21 @@ public class Placeholders extends DuelsExtension implements Listener {
             final Arena arena = arenaManager.get(player);
 
             if (arena == null) {
-                return StringUtil.color(config.getNotInMatch());
+                return StringUtil.color(notInMatch);
             }
 
             final Match match = arena.getMatch();
 
             if (match == null) {
-                return StringUtil.color(config.getNotInMatch());
+                return StringUtil.color(notInMatch);
             }
 
             if (identifier.equalsIgnoreCase("duration")) {
-                return DurationFormatUtils.formatDuration(System.currentTimeMillis() - match.getStart(), config.getDurationFormat());
+                return DurationFormatUtils.formatDuration(System.currentTimeMillis() - match.getStart(), durationFormat);
             }
 
             if (identifier.equalsIgnoreCase("kit")) {
-                return match.getKit() != null ? match.getKit().getName() : StringUtil.color(config.getNoKit());
+                return match.getKit() != null ? match.getKit().getName() : StringUtil.color(noKit);
             }
 
             if (identifier.equalsIgnoreCase("arena")) {
@@ -114,17 +126,17 @@ public class Placeholders extends DuelsExtension implements Listener {
                 user = userManager.get(player);
 
                 if (user == null) {
-                    return StringUtil.color(config.getUserNotFound());
+                    return StringUtil.color(userNotFound);
                 }
 
-                return match.getKit() != null ? String.valueOf(user.getRating(match.getKit())) : StringUtil.color(config.getNoKit());
+                return match.getKit() != null ? String.valueOf(user.getRating(match.getKit())) : StringUtil.color(noKit);
             }
 
             if (identifier.startsWith("opponent")) {
                 final Player opponent = match.getPlayers().stream().filter(matchPlayer -> !matchPlayer.equals(player)).findFirst().orElse(null);
 
                 if (opponent == null) {
-                    return StringUtil.color(config.getNoOpponent());
+                    return StringUtil.color(noOpponent);
                 }
 
                 if (!identifier.endsWith("_rating")) {
@@ -134,19 +146,14 @@ public class Placeholders extends DuelsExtension implements Listener {
                 user = userManager.get(opponent);
 
                 if (user == null) {
-                    return StringUtil.color(config.getUserNotFound());
+                    return StringUtil.color(userNotFound);
                 }
 
-                return match.getKit() != null ? String.valueOf(user.getRating(match.getKit())) : StringUtil.color(config.getNoKit());
+                return match.getKit() != null ? String.valueOf(user.getRating(match.getKit())) : StringUtil.color(noKit);
             }
         }
 
         return null;
-    }
-
-    @EventHandler
-    public void on(final KitCreateEvent event) {
-        updatables.forEach(updatable -> updatable.update(event.getKit()));
     }
 
     @SuppressWarnings("unchecked")
@@ -154,5 +161,10 @@ public class Placeholders extends DuelsExtension implements Listener {
         try {
             updatables.add(clazz.getConstructor(Placeholders.class, Duels.class).newInstance(this, api));
         } catch (Exception ignored) {}
+    }
+
+    @EventHandler
+    public void on(final KitCreateEvent event) {
+        updatables.forEach(updatable -> updatable.update(event.getKit()));
     }
 }
