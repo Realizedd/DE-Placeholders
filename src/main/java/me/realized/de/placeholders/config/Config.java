@@ -1,4 +1,4 @@
-package me.realized.de.placeholders;
+package me.realized.de.placeholders.config;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import lombok.Getter;
+import me.realized.de.placeholders.Placeholders;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

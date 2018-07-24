@@ -1,4 +1,4 @@
-package me.realized.de.placeholders;
+package me.realized.de.placeholders.util;
 
 import org.bukkit.ChatColor;
 

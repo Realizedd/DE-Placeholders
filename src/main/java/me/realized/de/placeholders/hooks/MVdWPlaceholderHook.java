@@ -1,8 +1,10 @@
-package me.realized.de.placeholders;
+package me.realized.de.placeholders.hooks;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import be.maximvdw.placeholderapi.PlaceholderReplaceEvent;
 import be.maximvdw.placeholderapi.PlaceholderReplacer;
+import me.realized.de.placeholders.Placeholders;
+import me.realized.de.placeholders.util.Updatable;
 import me.realized.duels.api.Duels;
 import me.realized.duels.api.kit.Kit;
 

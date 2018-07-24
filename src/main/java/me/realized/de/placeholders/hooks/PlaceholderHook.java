@@ -1,7 +1,9 @@
-package me.realized.de.placeholders;
+package me.realized.de.placeholders.hooks;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.realized.de.placeholders.Placeholders;
+import me.realized.de.placeholders.util.Updatable;
 import me.realized.duels.api.Duels;
 import me.realized.duels.api.kit.Kit;
 import org.bukkit.entity.Player;
