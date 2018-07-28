@@ -2,5 +2,5 @@ name: Placeholders
 version: @VERSION@
 main: me.realized.de.placeholders.Placeholders
 authors: [Realized]
-description: Match information placeholders for MVdWPlaceholderAPI & Clip's PlaceholderAPI.
+description: Rating & Match information placeholders for MVdWPlaceholderAPI & Clip's PlaceholderAPI.
 website: Not released yet
