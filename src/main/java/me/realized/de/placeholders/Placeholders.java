@@ -146,8 +146,12 @@ public class Placeholders extends DuelsExtension implements Listener {
                     return StringUtil.color(noOpponent);
                 }
 
-                if (!identifier.endsWith("_rating")) {
+                if (identifier.equalsIgnoreCase("opponent")) {
                     return opponent.getName();
+                }
+
+                if (identifier.endsWith("_health")) {
+                    return String.valueOf(Math.ceil(opponent.getHealth()) * 0.5);
                 }
 
                 user = userManager.get(opponent);

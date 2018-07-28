@@ -49,3 +49,7 @@ dependencies {
     compile ('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT') { transitive = false }
     compile name:'duels-api-3.1.0'
 }
+
+jar {
+    archiveName = archiveName.replace("DE-", "")
+}

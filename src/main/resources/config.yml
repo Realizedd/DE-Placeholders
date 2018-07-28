@@ -2,7 +2,7 @@
 user-not-found: 'User not found'
 
 # Displayed when player is not in a duel.
-not-in-match: 'Not in duel'
+not-in-match: 'none'
 
 # Match duration format.
 duration-format: 'mm:ss'
