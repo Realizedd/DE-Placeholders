@@ -3,4 +3,4 @@ version: @VERSION@
 main: me.realized.de.placeholders.Placeholders
 authors: [Realized]
 description: Rating & Match information placeholders for MVdWPlaceholderAPI & Clip's PlaceholderAPI.
-website: Not released yet
+website: https://www.spigotmc.org/resources/duels-extension-placeholders.59161/
