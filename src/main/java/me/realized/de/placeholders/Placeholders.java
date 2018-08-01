@@ -7,6 +7,7 @@ import me.realized.de.placeholders.hooks.MVdWPlaceholderHook;
 import me.realized.de.placeholders.hooks.PlaceholderHook;
 import me.realized.de.placeholders.util.StringUtil;
 import me.realized.de.placeholders.util.Updatable;
+import me.realized.de.placeholders.util.compat.Ping;
 import me.realized.duels.api.Duels;
 import me.realized.duels.api.arena.Arena;
 import me.realized.duels.api.arena.ArenaManager;
@@ -152,6 +153,10 @@ public class Placeholders extends DuelsExtension implements Listener {
 
                 if (identifier.endsWith("_health")) {
                     return String.valueOf(Math.ceil(opponent.getHealth()) * 0.5);
+                }
+
+                if (identifier.endsWith("_ping")) {
+                    return String.valueOf(Ping.getPing(opponent));
                 }
 
                 user = userManager.get(opponent);
