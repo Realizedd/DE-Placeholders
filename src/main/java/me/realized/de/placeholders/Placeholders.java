@@ -55,14 +55,19 @@ public class Placeholders extends DuelsExtension implements Listener {
         this.kitManager = api.getKitManager();
         this.arenaManager = api.getArenaManager();
 
-        api.getServer().getPluginManager().registerEvents(this, api);
+        api.registerListener(this);
         doIfFound("PlaceholderAPI", () -> register(PlaceholderHook.class));
         doIfFound("MVdWPlaceholderAPI", () -> register(MVdWPlaceholderHook.class));
     }
 
     @Override
+    public void onDisable() {
+        updatables.clear();
+    }
+
+    @Override
     public String getRequiredVersion() {
-        return "3.1.0";
+        return "3.1.2";
     }
 
     private void doIfFound(final String name, final Runnable action) {

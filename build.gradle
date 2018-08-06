@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 group 'me.realized.de'
-version '1.0.1-SNAPSHOT'
+version '1.0.2-SNAPSHOT'
 
 apply plugin: 'java'
 
@@ -48,7 +48,7 @@ dependencies {
     compile 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
     compile 'me.clip:placeholderapi:2.8.4'
     compile ('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT') { transitive = false }
-    compile 'com.github.RealizedMC.Duels:duels-api:v3.1.0'
+    compile 'com.github.RealizedMC.Duels:duels-api:v3.1.2'
 }
 
 jar {
