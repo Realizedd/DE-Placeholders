@@ -67,7 +67,7 @@ public class Placeholders extends DuelsExtension implements Listener {
 
     @Override
     public String getRequiredVersion() {
-        return "3.1.2";
+        return "3.3.0";
     }
 
     private void doIfFound(final String name, final Runnable action) {
@@ -101,7 +101,13 @@ public class Placeholders extends DuelsExtension implements Listener {
                 return StringUtil.color(userNotFound);
             }
 
-            final Kit kit = kitManager.get(identifier.replace("rating_", ""));
+            identifier = identifier.replace("rating_", "");
+
+            if (identifier.equals("-")) {
+                return String.valueOf(user.getRating());
+            }
+
+            final Kit kit = kitManager.get(identifier);
             return kit != null ? String.valueOf(user.getRating(kit)) : StringUtil.color(noKit);
         }
 
@@ -142,7 +148,7 @@ public class Placeholders extends DuelsExtension implements Listener {
                     return StringUtil.color(userNotFound);
                 }
 
-                return match.getKit() != null ? String.valueOf(user.getRating(match.getKit())) : StringUtil.color(noKit);
+                return String.valueOf(match.getKit() != null ? user.getRating(match.getKit()) : user.getRating());
             }
 
             if (identifier.startsWith("opponent")) {
@@ -170,7 +176,7 @@ public class Placeholders extends DuelsExtension implements Listener {
                     return StringUtil.color(userNotFound);
                 }
 
-                return match.getKit() != null ? String.valueOf(user.getRating(match.getKit())) : StringUtil.color(noKit);
+                return String.valueOf(match.getKit() != null ? user.getRating(match.getKit()) : user.getRating());
             }
         }
 

@@ -19,7 +19,7 @@ public class PlaceholderHook implements Updatable<Kit> {
         this.extension = extension;
         this.api = api;
         this.previous = PlaceholderAPI.getPlaceholders().get("duels");
-        PlaceholderAPI.unregisterPlaceholderHook(api);
+        PlaceholderAPI.unregisterPlaceholderHook("duels");
         new PlaceholdersExpansion().register();
     }
 
