@@ -16,6 +16,8 @@ import me.realized.duels.api.extension.DuelsExtension;
 import me.realized.duels.api.kit.Kit;
 import me.realized.duels.api.kit.KitManager;
 import me.realized.duels.api.match.Match;
+import me.realized.duels.api.spectate.SpectateManager;
+import me.realized.duels.api.spectate.Spectator;
 import me.realized.duels.api.user.User;
 import me.realized.duels.api.user.UserManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -39,6 +41,8 @@ public class Placeholders extends DuelsExtension implements Listener {
     private KitManager kitManager;
     @Getter
     private ArenaManager arenaManager;
+    @Getter
+    private SpectateManager spectateManager;
 
     private final List<Updatable<Kit>> updatables = new ArrayList<>();
 
@@ -54,6 +58,7 @@ public class Placeholders extends DuelsExtension implements Listener {
         this.userManager = api.getUserManager();
         this.kitManager = api.getKitManager();
         this.arenaManager = api.getArenaManager();
+        this.spectateManager = api.getSpectateManager();
 
         api.registerListener(this);
         doIfFound("PlaceholderAPI", () -> register(PlaceholderHook.class));
@@ -67,7 +72,7 @@ public class Placeholders extends DuelsExtension implements Listener {
 
     @Override
     public String getRequiredVersion() {
-        return "3.3.0";
+        return "3.5.1";
     }
 
     private void doIfFound(final String name, final Runnable action) {
@@ -87,7 +92,7 @@ public class Placeholders extends DuelsExtension implements Listener {
         } catch (Exception ignored) {}
     }
 
-    public String find(final Player player, String identifier) {
+    public String find(Player player, String identifier) {
         if (player == null) {
             return "Player is required";
         }
@@ -113,10 +118,21 @@ public class Placeholders extends DuelsExtension implements Listener {
 
         if (identifier.startsWith("match_")) {
             identifier = identifier.replace("match_", "");
-            final Arena arena = arenaManager.get(player);
+            Arena arena = arenaManager.get(player);
 
             if (arena == null) {
-                return StringUtil.color(notInMatch);
+                final Spectator spectator = spectateManager.get(player);
+
+                if (spectator == null) {
+                    return StringUtil.color(notInMatch);
+                }
+
+                arena = spectator.getArena();
+                player = spectator.getTarget();
+
+                if (player == null) {
+                    return StringUtil.color(notInMatch);
+                }
             }
 
             final Match match = arena.getMatch();
@@ -152,7 +168,14 @@ public class Placeholders extends DuelsExtension implements Listener {
             }
 
             if (identifier.startsWith("opponent")) {
-                final Player opponent = match.getPlayers().stream().filter(matchPlayer -> !matchPlayer.equals(player)).findFirst().orElse(null);
+                Player opponent = null;
+
+                for (final Player matchPlayer : match.getPlayers()) {
+                    if (!matchPlayer.equals(player)) {
+                        opponent = matchPlayer;
+                        break;
+                    }
+                }
 
                 if (opponent == null) {
                     return StringUtil.color(noOpponent);

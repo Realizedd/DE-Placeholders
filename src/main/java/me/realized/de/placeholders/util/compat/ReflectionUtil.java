@@ -2,32 +2,36 @@ package me.realized.de.placeholders.util.compat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import me.realized.de.placeholders.util.NumberUtil;
 import org.bukkit.Bukkit;
 
 public final class ReflectionUtil {
 
-    private final static String VERSION;
+    private static final String PACKAGE_VERSION;
+    private static final int MAJOR_VERSION;
 
     static {
-        VERSION = Bukkit.getServer().getClass().getName().split("\\.")[3];
+        final String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        PACKAGE_VERSION = packageName.substring(packageName.lastIndexOf('.') + 1);
+        MAJOR_VERSION = NumberUtil.parseInt(PACKAGE_VERSION.split("_")[1]).orElse(0);
     }
 
-    private ReflectionUtil() {}
+    public static int getMajorVersion() {
+        return MAJOR_VERSION;
+    }
 
     public static Class<?> getNMSClass(final String name) {
         try {
-            return Class.forName("net.minecraft.server." + VERSION + "." + name);
+            return Class.forName("net.minecraft.server." + PACKAGE_VERSION + "." + name);
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
             return null;
         }
     }
 
     public static Class<?> getCBClass(final String path) {
         try {
-            return Class.forName("org.bukkit.craftbukkit." + VERSION + "." + path);
+            return Class.forName("org.bukkit.craftbukkit." + PACKAGE_VERSION + "." + path);
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
             return null;
         }
     }
@@ -36,7 +40,6 @@ public final class ReflectionUtil {
         try {
             return clazz.getMethod(name, parameters);
         } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
             return null;
         }
     }
@@ -45,8 +48,9 @@ public final class ReflectionUtil {
         try {
             return clazz.getField(name);
         } catch (NoSuchFieldException ex) {
-            ex.printStackTrace();
             return null;
         }
     }
+
+    private ReflectionUtil() {}
 }
